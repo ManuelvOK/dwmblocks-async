@@ -1,12 +1,13 @@
 #!/bin/sh
-# dwmblocks: charge of all batteries, '+' while charging.
-# Prints nothing without battery.
+# dwmblocks: charge of all batteries with an arrow for charging (↑) or
+# discharging (↓). Prints nothing without battery.
 
 out=
 for bat in /sys/class/power_supply/BAT*; do
 	[ -r "$bat/capacity" ] || continue
 	case $(cat "$bat/status") in
-		Charging) state=+ ;;
+		Charging) state=↑ ;;
+		Discharging) state=↓ ;;
 		*) state= ;;
 	esac
 	out="$out${out:+ }$(cat "$bat/capacity")%$state"
