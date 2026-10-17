@@ -1,13 +1,9 @@
 #!/bin/sh
 # dwmblocks: what the active media player plays, e.g. Spotify or a YouTube
 # video in the browser. Prints nothing without a player.
-# left click: play/pause, scroll up: previous, scroll down: next
+# left click: play/pause
 
-case $BLOCK_BUTTON in
-	1) media.sh play-pause ;;
-	4) media.sh prev ;;
-	5) media.sh next ;;
-esac
+[ "$BLOCK_BUTTON" = 1 ] && media.sh play-pause
 
 command -v playerctl >/dev/null || exit 0
 
@@ -31,5 +27,9 @@ esac
 artist=$(playerctl -p "$player" metadata artist 2>/dev/null)
 title=$(playerctl -p "$player" metadata title 2>/dev/null)
 text=${artist:+$artist – }$title
+# dwmblocks cuts blocks at MAX_BLOCK_OUTPUT_LENGTH (45) characters, so
+# shorten the text here to keep the closing bracket: "[▶ " + 40 + "]"
+text=$(printf '%s' "$text" | LC_ALL=C.UTF-8 awk -v max=40 \
+	'{ if (length($0) > max) $0 = substr($0, 1, max - 1) "…"; print }')
 [ -n "$text" ] && echo "[$state $text]"
 exit 0

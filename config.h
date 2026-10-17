@@ -21,8 +21,8 @@
 // volume.sh runs `pkill -RTMIN+2 dwmblocks`. Keep the numbers in sync.
 #define BLOCKS(X)              \
     X("", "sb-term", 0, 5)     \
-    X("", "sb-music", 5, 6)    \
     X("", "sb-wifi", 10, 1)    \
+    X("", "sb-music", 5, 6)    \
     X("", "sb-volume", 30, 2)  \
     X("", "sb-battery", 30, 3) \
     X("", "sb-date", 5, 4)
