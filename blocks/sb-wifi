@@ -1,0 +1,27 @@
+#!/bin/sh
+# dwmblocks: wifi network and signal strength
+# left click: wifi on/off, right click: network menu
+
+case $BLOCK_BUTTON in
+	1) if [ "$(nmcli radio wifi)" = enabled ]; then
+		nmcli radio wifi off
+	else
+		nmcli radio wifi on
+	fi ;;
+	3) setsid -f netmenu.sh >/dev/null 2>&1 ;;
+esac
+
+if [ "$(nmcli radio wifi)" != enabled ]; then
+	echo "[WIFI: off]"
+	exit 0
+fi
+# terse output escapes ':' in the SSID as '\:'
+info=$(nmcli -t -f active,ssid,signal device wifi list --rescan no | grep '^yes:' | head -n 1)
+if [ -z "$info" ]; then
+	echo "[WIFI: --]"
+	exit 0
+fi
+signal=${info##*:}
+ssid=${info#yes:}
+ssid=$(printf '%s' "${ssid%:*}" | sed 's/\\:/:/g')
+echo "[$ssid $signal%]"

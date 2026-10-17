@@ -1,0 +1,17 @@
+#!/bin/sh
+# dwmblocks: volume of the default PulseAudio sink
+# left click: mute, right click: pavucontrol, scroll: volume up/down
+
+case $BLOCK_BUTTON in
+	1) volume.sh mute ;;
+	3) command -v pavucontrol >/dev/null && setsid -f pavucontrol >/dev/null 2>&1 ;;
+	4) volume.sh up ;;
+	5) volume.sh down ;;
+esac
+
+vol=$(LC_ALL=C pactl get-sink-volume @DEFAULT_SINK@ | grep -o '[0-9]*%' | head -n 1)
+if [ "$(LC_ALL=C pactl get-sink-mute @DEFAULT_SINK@)" = "Mute: yes" ]; then
+	echo "[VOL: $vol M]"
+else
+	echo "[VOL: $vol]"
+fi

@@ -1,0 +1,3 @@
+#!/bin/sh
+# dwmblocks: date and time
+date '+%F %H:%M'

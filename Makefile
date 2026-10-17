@@ -17,6 +17,7 @@ CFLAGS += $(shell pkg-config --cflags $(LIBS))
 LDLIBS := $(shell pkg-config --libs $(LIBS))
 
 SRCS := $(wildcard $(SRC_DIR)/*.c)
+BLOCKS := $(wildcard blocks/sb-*)
 OBJS := $(subst $(SRC_DIR)/,$(BUILD_DIR)/,$(SRCS:.c=.o))
 
 INSTALL_DIR := $(DESTDIR)$(PREFIX)/bin
@@ -49,9 +50,12 @@ clean:
 install: $(BUILD_DIR)/$(BIN)
 	$(PRINTF) "INSTALL" $(INSTALL_DIR)/$(BIN)
 	$Qinstall -D -m 755 $< $(INSTALL_DIR)/$(BIN)
+	$(PRINTF) "INSTALL" "$(BLOCKS)"
+	$Qinstall -D -m 755 -t $(INSTALL_DIR) $(BLOCKS)
 
 uninstall:
 	$(PRINTF) "RM" $(INSTALL_DIR)/$(BIN)
 	$Q$(RM) $(INSTALL_DIR)/$(BIN)
+	$Q$(RM) $(addprefix $(INSTALL_DIR)/,$(notdir $(BLOCKS)))
 
 .PHONY: all clean install uninstall
