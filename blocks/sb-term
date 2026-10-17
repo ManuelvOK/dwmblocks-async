@@ -1,0 +1,5 @@
+#!/bin/sh
+# dwmblocks: a [+] button. Left click opens a new terminal.
+
+[ "$BLOCK_BUTTON" = 1 ] && setsid -f st >/dev/null 2>&1
+echo "[+]"

@@ -20,6 +20,7 @@
 // The signal of a block is also used to refresh it from outside, e.g.
 // volume.sh runs `pkill -RTMIN+2 dwmblocks`. Keep the numbers in sync.
 #define BLOCKS(X)              \
+    X("", "sb-term", 0, 5)     \
     X("", "sb-wifi", 10, 1)    \
     X("", "sb-volume", 30, 2)  \
     X("", "sb-battery", 30, 3) \
