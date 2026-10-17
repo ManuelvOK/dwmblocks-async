@@ -1,0 +1,35 @@
+#!/bin/sh
+# dwmblocks: what the active media player plays, e.g. Spotify or a YouTube
+# video in the browser. Prints nothing without a player.
+# left click: play/pause, scroll up: previous, scroll down: next
+
+case $BLOCK_BUTTON in
+	1) media.sh play-pause ;;
+	4) media.sh prev ;;
+	5) media.sh next ;;
+esac
+
+command -v playerctl >/dev/null || exit 0
+
+# the player that is playing right now, otherwise the first one
+player=
+for p in $(playerctl -l 2>/dev/null); do
+	if [ "$(playerctl -p "$p" status 2>/dev/null)" = Playing ]; then
+		player=$p
+		break
+	fi
+done
+[ -n "$player" ] || player=$(playerctl -l 2>/dev/null | head -n 1)
+[ -n "$player" ] || exit 0
+
+case $(playerctl -p "$player" status 2>/dev/null) in
+	Playing) state='▶' ;;
+	Paused)  state='⏸' ;;
+	*)       exit 0 ;;
+esac
+# browsers report the channel as artist, which may be empty
+artist=$(playerctl -p "$player" metadata artist 2>/dev/null)
+title=$(playerctl -p "$player" metadata title 2>/dev/null)
+text=${artist:+$artist – }$title
+[ -n "$text" ] && echo "[$state $text]"
+exit 0
