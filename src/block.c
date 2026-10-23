@@ -1,5 +1,6 @@
 #include "block.h"
 
+#include <signal.h>
 #include <stdbool.h>
 #include <stddef.h>
 #include <stdint.h>
@@ -68,6 +69,13 @@ int block_execute(block *const block, const uint8_t button) {
     if (block->fork_pid == 0) {
         const int write_fd = block->pipe[WRITE_END];
         int status = close(block->pipe[READ_END]);
+
+        // The signals handled through signalfd are blocked. Unblock them, or
+        // every program a block starts inherits them blocked and ignores
+        // e.g. SIGTERM.
+        sigset_t set;
+        (void)sigemptyset(&set);
+        status |= sigprocmask(SIG_SETMASK, &set, NULL);
 
         if (button != 0) {
             char button_str[4];
