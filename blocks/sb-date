@@ -1,3 +1,18 @@
 #!/bin/sh
 # dwmblocks: date and time
+# left click: calendar of three months, right click: calendar of the year.
+# Clicking again closes it.
+
+# $1: view of calendar.sh, $2: st geometry, top right below the bar
+calendar() {
+	pkill -f "^st -c calendar -n $1 " && return
+	pkill -f '^st -c calendar '
+	setsid -f st -c calendar -n "$1" -g "$2" -e calendar.sh "$1" >/dev/null 2>&1
+}
+
+case $BLOCK_BUTTON in
+	1) calendar month 66x10-0+0 ;;
+	3) calendar year 66x36-0+0 ;;
+esac
+
 date '+%F %H:%M'
